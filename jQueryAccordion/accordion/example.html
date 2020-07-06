@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .box {
+            height: 100%;
+            background: #ccc;
+        }
+
+        .box ul {
+            height: 100%;
+        }
+
+        .box li {
+            min-height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
+            padding-left: 20px;
+            box-sizing: border-box;
+        }
+
+        .box em {
+            display: block;
+            width: 22px;
+            height: 32px;
+            background: url("./img/direction.png") no-repeat center;
+            background-size: 50% 50%;
+            position: absolute;
+            left: 0px;
+            top: 25px;
+            margin-top: -16px;
+            transition: all 0.5s;
+        }
+        .box .active {
+            transform: rotate(90deg);
+            transition: all 0.5s;
+        }
+        .box h1 {
+            font-size: 20px;
+            line-height: 50px;
+        }
+        .box p{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <ul>
+            <li>
+                <em></em>
+                <h1>语文</h1>
+                <p>高考语文考了60分，觉得自己不是一个中国人</p>
+                <p>高考语文考了60分，觉得自己不是一个中国人</p>
+                <p>高考语文考了60分，觉得自己不是一个中国人</p>
+            </li>
+            <li>
+                <em></em>
+                <h1>数学</h1>
+                <p>数学是我的强项，但是感觉没啥用</p>
+                <p>数学是我的强项，但是感觉没啥用</p>
+                <p>数学是我的强项，但是感觉没啥用</p>
+            </li>
+            <li>
+                <em></em>
+                <h1>英语</h1>
+                <p>虽说我是一个中国人，但是美国妞也不错啊</p>
+                <p>虽说我是一个中国人，但是美国妞也不错啊</p>
+                <p>虽说我是一个中国人，但是美国妞也不错啊</p>
+            </li>
+            <li>
+                <em></em>
+                <h1>地理</h1>
+                <p>这个课程好像是多余的</p>
+                <p>这个课程好像是多余的</p>
+                <p>这个课程好像是多余的</p>
+            </li>
+        </ul>
+    </div>
+    <script>
+        $(() => {
+            //给li标签添加一个点击事件
+            $("ul").on("click", "li h1", function () {
+                $(this).prev().toggleClass("active");
+                $(this).nextAll().stop().slideToggle();
+            })
+        })
+    </script>
+</body>
+
+</html>
