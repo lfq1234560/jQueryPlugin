@@ -34,33 +34,33 @@
 </head>
 
 <body>
-    <div class="gripTop">
-        <div class="title">吸住</div>
-    </div>
-    <script>
-        $(() => {
-            // 获取离顶部的距离
-            let {
-                top
-            } = $(".title").offset();
-            //监听页面的滚动
-            window.onscroll = function () {
-                if (window.scrollY >= top) {
-                    $(".title").css({
-                        position: "fixed",
-                        left: 0,
-                        top: 0
-                    })
-                } else if (window.scrollY < top) {
-                    $(".title").css({
-                        position: "absolute",
-                        left: 0,
-                        top,
-                    })
-                }
+<div class="gripTop">
+    <div class="title">吸住</div>
+</div>
+<script>
+    $(() => {
+        // 获取离顶部的距离
+        let {
+            top
+        } = $(".title").offset();
+        //监听页面的滚动
+        window.onscroll = function () {
+            if (window.scrollY >= top) {
+                $(".title").css({
+                    position: "fixed",
+                    left: 0,
+                    top: 0
+                })
+            } else if (window.scrollY < top) {
+                $(".title").css({
+                    position: "absolute",
+                    left: 0,
+                    top,
+                })
             }
-        })
-    </script>
+        }
+    })
+</script>
 </body>
 
 </html>

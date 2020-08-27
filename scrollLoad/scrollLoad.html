@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            min-height: 1200px;
+        }
+
+        img {
+            width: 100%;
+            height: 1200px;
+            display: block;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="box">
+
+    </div>
+    <script>
+        //获取标签
+        let jqDiv = $(".box");
+        //获取第一次滚动距离
+        let minHeight = parseInt($(".box").css("min-height"));
+        let innerHeight = window.innerHeight;
+        let firstScrollHeight = minHeight - innerHeight;
+        //一进来就发请求
+        $.ajax({
+            url: "http://localhost:4000/home/data1",
+            type: "get",
+            success(response) {
+                let {
+                    imgsrc
+                } = response.data;
+                let jqImg = $(`<img src='${imgsrc}'>`);
+                jqDiv.append(jqImg);
+                window.scrollTo(0, 0);
+            },
+        })
+        //封装请求的方法
+        function request(url, resolve) {
+            $.ajax({
+                url,
+                type: "get",
+                success(response) {
+                    let {
+                        imgsrc
+                    } = response.data;
+                    let jqImg = $(`<img src='${imgsrc}'>`);
+                    jqDiv.append(jqImg);
+                    window.onscroll = null;
+                    resolve();
+                },
+            })
+        }
+        new Promise((resolve, reject) => {
+            window.onscroll = function () {
+                if (window.scrollY / firstScrollHeight === 1) {
+                    setTimeout(() => {
+                        request("http://localhost:4000/home/data2", resolve);
+                    }, 1000);
+                }
+            }
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                window.onscroll = function () {
+                    if (window.scrollY / (firstScrollHeight+1200*1)=== 1) {
+                        setTimeout(() => {
+                            request("http://localhost:4000/home/data1", resolve);
+                        }, 1000);
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
