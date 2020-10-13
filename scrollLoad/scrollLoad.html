@@ -63,8 +63,11 @@
                     let {
                         imgsrc
                     } = response.data;
-                    let jqImg = $(`<img src='${imgsrc}'>`)
+                    let jqImg = $(
+                        `<img data-src=${imgsrc} src='https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1471151440,2830170852&fm=26&gp=0.jpg'>`
+                    )
                     jqDiv.append(jqImg);
+                    lazyload(jqDiv[0].querySelectorAll("img"), "data-src");
                     setTimeout(() => {
                         window.scrollTo(0, 0);
                         resolve();
@@ -107,22 +110,36 @@
                                         imgsrc
                                     } = response.data;
                                     let jqImg = $(
-                                        `<img src='https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1471151440,2830170852&fm=26&gp=0.jpg'>`
-                                    );
+                                        `<img data-src=${imgsrc} src='https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1471151440,2830170852&fm=26&gp=0.jpg'>`
+                                    )
                                     jqDiv.append(jqImg);
+                                    lazyload(jqDiv[0].querySelectorAll("img"), "data-src");
                                     jqSpan.remove();
-                                    setTimeout(() => {
-                                        jqImg.attr("src", imgsrc);
-                                    }, 1000);
-                                    resolve();
                                     if (page === 5) {
                                         let jqSpan = $("<span>到底了</span>");
                                         jqDiv.append(jqSpan);
                                     }
+                                    resolve();
                                 },
                             })
                         }, 1000);
                     }
+                }
+            }
+        }
+        //图片懒加载
+        function lazyload(imgs, customAttr) {
+            var h = window.innerHeight; 
+            var s = document.documentElement.scrollTop || document.body.scrollTop; 
+            for (let i = 0; i < imgs.length; i++) {
+                if ((h + s) > imgs[i].offsetTop) { 
+                    setTimeout(function () { 
+                        var temp = new Image(); 
+                        temp.src = imgs[i].getAttribute(customAttr);
+                        temp.onload = function () { 
+                            imgs[i].src = imgs[i].getAttribute(customAttr)
+                        }
+                    }, 2000)
                 }
             }
         }
