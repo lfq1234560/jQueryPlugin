@@ -13,6 +13,7 @@
             margin: 0;
             padding: 0;
         }
+
         .header {
             height: 100px;
             background-color: blue;
@@ -42,35 +43,57 @@
 </head>
 
 <body>
+
     <div class="header">头部</div>
     <div class="box"></div>
     <script>
         //拿标签
         let jqDiv = $(".box");
-        let jqHeader=$(".header");
+        let jqHeader = $(".header");
         //初始页面值
         let page = 1;
-        //初始第一页数据的
-        $.ajax({
-            url: "http://localhost:4000/home/data1",
-            type: "get",
-            success(response) {
-                let {
-                    imgsrc
-                } = response.data;
-                let jqImg = $(`<img src='${imgsrc}'>`)
-                jqDiv.append(jqImg);
-                setTimeout(() => {
-                    window.scrollTo(0, 0);
-                }, 100)
-            },
-        })
         //设置装图片盒子的最小高度
         jqDiv.css("min-height", window.innerHeight + "px");
-        //封装请求的方法
+        //发请求获取数据 
+        new Promise((resolve, reject) => {
+            $.ajax({
+                url: "http://localhost:4000/home/data1",
+                type: "get",
+                success(response) {
+                    let {
+                        imgsrc
+                    } = response.data;
+                    let jqImg = $(`<img src='${imgsrc}'>`)
+                    jqDiv.append(jqImg);
+                    setTimeout(() => {
+                        window.scrollTo(0, 0);
+                        resolve();
+                    }, 100);
+                },
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                request("http://localhost:4000/home/data2", resolve)
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                request("http://localhost:4000/home/data1", resolve)
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                request("http://localhost:4000/home/data2", resolve)
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                request("http://localhost:4000/home/data1", resolve)
+            })
+        })
+        //滚动加载数据
         function request(url, resolve) {
             window.onscroll = function () {
-                if (window.scrollY / (parseFloat(jqDiv.css("height"))+parseFloat(jqHeader.css("height")) -window.innerHeight) === 1) {
+                if (window.scrollY / (parseFloat(jqDiv.css("height")) + parseFloat(jqHeader.css("height")) - window
+                        .innerHeight) === 1) {
+                    window.onscroll = null; //清除滚动事件
                     page++
                     if (page <= 5) { //总的页面值为5页
                         let jqSpan = $("<span>等待中</span>");
@@ -90,34 +113,19 @@
                                     jqSpan.remove();
                                     setTimeout(() => {
                                         jqImg.attr("src", imgsrc);
-                                    }, 1500);
+                                    }, 1000);
                                     resolve();
+                                    if (page === 5) {
+                                        let jqSpan = $("<span>到底了</span>");
+                                        jqDiv.append(jqSpan);
+                                    }
                                 },
                             })
                         }, 1000);
-                    } else {
-                        let jqSpan = $("<span>到底了</span>");
-                        jqDiv.append(jqSpan);
                     }
                 }
             }
         }
-        //发请求获取数据
-        new Promise((resolve, reject) => {
-            request("http://localhost:4000/home/data2", resolve)
-        }).then(() => {
-            return new Promise((resolve, reject) => {
-                request("http://localhost:4000/home/data1", resolve)
-            })
-        }).then(() => {
-            return new Promise((resolve, reject) => {
-                request("http://localhost:4000/home/data2", resolve)
-            })
-        }).then(() => {
-            return new Promise((resolve, reject) => {
-                request("http://localhost:4000/home/data1", resolve)
-            })
-        })
     </script>
 </body>
 
